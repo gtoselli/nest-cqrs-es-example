@@ -5,8 +5,8 @@ interface IItemAddedToCartPayload {
     itemName: string;
 }
 
-export class ItemAddedToCart extends PublicEvent<IItemAddedToCartPayload> {
+export class ItemAddedToCartEvent extends PublicEvent<IItemAddedToCartPayload> {
     constructor(cartId: string, payload: IItemAddedToCartPayload) {
-        super(ItemAddedToCart.name, cartId, payload);
+        super(ItemAddedToCartEvent.name, cartId, payload);
     }
 }

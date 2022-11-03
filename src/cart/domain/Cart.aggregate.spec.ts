@@ -12,11 +12,15 @@ describe('Cart aggregate', () => {
     it('should be an aggregate root extension', () => {
         const cart = new CartAggregate(cartIdFixture);
         expect(cart.id).toBeDefined();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        expect(cart._changes).toBeDefined();
     });
 
     describe('Cart creation', () => {
         it('should create an empty cart with a uuid', () => {
-            const cart = CartAggregate.createEmpty();
+            const cart = CartAggregate.emptyFactory();
+            cart.create();
             expect(isValidUUID(cart.id)).toBeTruthy();
         });
     });
@@ -25,7 +29,7 @@ describe('Cart aggregate', () => {
         let cart: CartAggregate;
 
         beforeEach(() => {
-            cart = CartAggregate.createEmpty();
+            cart = CartAggregate.emptyFactory();
         });
 
         const itemIdFixture = 'foo-item-id';

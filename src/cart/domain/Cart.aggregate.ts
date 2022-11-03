@@ -2,7 +2,8 @@ import { AggregateRoot } from '../../@infra/aggregate';
 import { v4 as uuid } from 'uuid';
 import { ItemsEntity } from './Items.entity';
 import { ItemEntity } from './Item.entity';
-import { ItemAddedToCart } from './events';
+import { ItemAddedToCartEvent } from './events';
+import { CartCreatedEvent } from './events/CartCreated.event';
 
 export class CartAggregate extends AggregateRoot {
     private items = new ItemsEntity();
@@ -11,22 +12,29 @@ export class CartAggregate extends AggregateRoot {
         super(cartId);
     }
 
-    public static createEmpty() {
+    public static emptyFactory() {
         const cartId = uuid();
         return new CartAggregate(cartId);
     }
 
+    public create() {
+        if (!this.id) throw new Error('Use factory before this method');
+        this.applyChange(new CartCreatedEvent(this.id));
+    }
+
     public addItem(itemId: string, itemName: string) {
-        this.applyChange(new ItemAddedToCart(this.id, { itemId, itemName }));
+        this.applyChange(new ItemAddedToCartEvent(this.id, { itemId, itemName }));
     }
 
     public getItemsCount(): number {
         return this.items.getCount();
     }
 
-    private onItemAddedToCart({ eventPayload }: ItemAddedToCart) {
+    private onItemAddedToCartEvent({ eventPayload }: ItemAddedToCartEvent) {
         const { itemId, itemName } = eventPayload;
         const item = new ItemEntity(itemId, itemName);
         this.items.addItem(item);
     }
+
+    private onCartCreatedEvent({}: CartCreatedEvent) {}
 }
