@@ -1,4 +1,4 @@
-import { AggregateRoot } from '../../@infra/aggregate';
+import { AggregateRoot } from '@infra';
 import { v4 as uuid } from 'uuid';
 import { ItemsEntity } from './Items.entity';
 import { ItemEntity } from './Item.entity';

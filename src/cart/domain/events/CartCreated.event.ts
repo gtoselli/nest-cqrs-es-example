@@ -1,4 +1,4 @@
-import { PublicEvent } from '../../../@infra/event';
+import { PublicEvent } from '@infra';
 
 export class CartCreatedEvent extends PublicEvent<void> {
     constructor(cartId: string) {

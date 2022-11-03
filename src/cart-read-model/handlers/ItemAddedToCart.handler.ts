@@ -1,6 +1,5 @@
-import { EventResult } from '../../@infra/interfaces/EventBus.interface';
-import { EventHandler } from '../../@infra/nest-utilities/decorators/EventHandler.decorator';
-import { IEventHandler } from '../../@infra/interfaces/EventHandler.interface';
+import { EventHandler, EventResult, IEventHandler } from '@infra';
+
 import { Injectable } from '@nestjs/common';
 import { CartReadModelRepo } from '../cart-read-model.repo';
 import { ItemAddedToCartEvent } from '../../cart/domain/events';

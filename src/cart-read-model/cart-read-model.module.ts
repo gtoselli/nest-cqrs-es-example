@@ -1,8 +1,7 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { CartCreatedHandler, ItemAddedToCartHandler } from './handlers';
-import { InfraModule } from '../@infra/nest-utilities/infra.module';
-import { EventHandlersBootstrapper } from '../@infra/nest-utilities/event-handlers-bootstrapper';
+import { EventHandlersBootstrapper, InfraModule } from '@infra';
 import { CartReadModelRepo } from './cart-read-model.repo';
 import { CartReadModelController } from './cart-read-model.controller';
 
