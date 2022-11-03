@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ISimpleRepo } from '../interfaces/SimpleRepo.interface';
 import { ISimpleEventStore } from '../interfaces/SimpleEventStore.interface';
-import { Event } from '../event';
 import { ConstructorFor } from '../utils';
 import { AggregateRoot } from '../aggregate';
-import { IEventBus } from '../interfaces/EventBus.interface';
 
 @Injectable()
 export class InMemoryEsRepo<GenericAggregate extends AggregateRoot> implements ISimpleRepo<GenericAggregate> {
@@ -29,25 +27,5 @@ export class InMemoryEsRepo<GenericAggregate extends AggregateRoot> implements I
 
         if (aggregate.deleted && !options.includeDeleted) return null;
         return aggregate;
-    }
-}
-
-export class InMemoryEs implements ISimpleEventStore {
-    private store: { [key: string]: Event<unknown>[] }[] = [];
-
-    constructor(private readonly eventBus: IEventBus) {}
-
-    public async appendEvents(aggregateId: string, events: Event<unknown>[]): Promise<void> {
-        if (!this.store[aggregateId]) {
-            this.store[aggregateId] = [];
-        }
-        events.forEach((event) => {
-            this.store[aggregateId].push(event);
-            this.eventBus.emit(event);
-        });
-    }
-
-    public async retrieveEventsByAggregateId(aggregateId: string): Promise<Event<unknown>[]> {
-        return this.store[aggregateId] || [];
     }
 }
