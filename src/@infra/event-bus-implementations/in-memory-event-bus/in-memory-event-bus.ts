@@ -1,7 +1,9 @@
 import { EventHandler, IEventBus } from '../../interfaces/EventBus.interface';
 import { Event } from '../../event';
+import { inspect } from 'util';
+import { elapsedFrom } from '../../utils';
 
-export class RabbitServiceBus implements IEventBus {
+export class InMemoryEventBus implements IEventBus {
     private handlers: { [key: string]: EventHandler<never> } = {};
     private pendingLocalEvents: Event<unknown>[] = [];
     private executingLocalEvents = false;
@@ -23,8 +25,8 @@ export class RabbitServiceBus implements IEventBus {
         this.handlers[eventName] = handler;
     }
 
-    private alreadyRegister(commandName: string) {
-        return !!this.handlers[commandName];
+    private alreadyRegister(eventName: string) {
+        return !!this.handlers[eventName];
     }
 
     private async executePendingEvents(): Promise<void> {
@@ -41,21 +43,20 @@ export class RabbitServiceBus implements IEventBus {
 
     private async dispatchLocalEvent<T extends Event<unknown>>(event: T) {
         let count = 0;
-        // const start = Date.now();
-        // const logger = this.createLoggerFrom<T>(event);
+        const start = Date.now();
         const handler = this.handlers[event.eventName] as EventHandler<T>;
         while (count < 3) {
             try {
                 const ret = await handler(event);
-                // logger.info(`Executed event: ${inspect(event)} in ${elapsedFrom(start)} ms, ret: ${inspect(ret)}`);
+                console.log(`Executed event: ${inspect(event)} in ${elapsedFrom(start)} ms, ret: ${inspect(ret)}`);
 
                 if (ret.ack) {
-                    // logger.info(`ACK local event: ${inspect(event)}`);
+                    console.log(`ACK local event: ${inspect(event)}`);
                     return;
                 }
-                // logger.warn(`NACK local event: ${inspect(event)}`);
+                console.log(`NACK local event: ${inspect(event)}`);
             } catch (error) {
-                // logger.warn(`NACK local event: ${inspect(event)} - ${inspect(error)}`, error);
+                console.warn(`NACK local event: ${inspect(event)} - ${inspect(error)}`, error);
             }
             count += 1;
         }

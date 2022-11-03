@@ -1,18 +1,21 @@
 import { CartCreatedEvent } from '../../cart/domain/events/CartCreated.event';
-import { EventResult, IEventBus } from '../../@infra/interfaces/EventBus.interface';
+import { EventResult } from '../../@infra/interfaces/EventBus.interface';
 import { EventHandler } from '../../@infra/nest-utilities/decorators/EventHandler.decorator';
 import { IEventHandler } from '../../@infra/interfaces/EventHandler.interface';
 import { Injectable } from '@nestjs/common';
+import { CartReadModelRepo } from '../cart-read-model.repo';
 
 @EventHandler(CartCreatedEvent)
 @Injectable()
 export class CartCreatedHandler implements IEventHandler<CartCreatedEvent> {
-    registerTo(eventBus: IEventBus) {
-        eventBus.register<CartCreatedEvent>(CartCreatedEvent.name, (e) => this.handle(e));
-    }
+    constructor(private readonly repo: CartReadModelRepo) {}
 
     async handle(event: CartCreatedEvent): Promise<EventResult> {
-        console.log(`Elaboro il mio fantastico evento ${JSON.stringify(event)}`);
+        await this.repo.createOne({
+            cartId: event.aggregateId,
+            isDeleted: false,
+            itemsCount: 0,
+        });
         return { ack: true };
     }
 }

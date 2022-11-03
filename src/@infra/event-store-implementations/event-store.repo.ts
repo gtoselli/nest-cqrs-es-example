@@ -5,19 +5,16 @@ import { ClassNotInstanceOf } from '../utils';
 import { AggregateRoot } from '../aggregate';
 
 @Injectable()
-export class EventStoreRepo<GenericAggregate extends AggregateRoot> implements ISimpleRepo<GenericAggregate> {
-    constructor(
-        private readonly es: ISimpleEventStore,
-        private aggregateConstructor: ClassNotInstanceOf<GenericAggregate>,
-    ) {}
+export class EventStoreRepo<A extends AggregateRoot> implements ISimpleRepo<A> {
+    constructor(private readonly es: ISimpleEventStore, private aggregateConstructor: ClassNotInstanceOf<A>) {}
 
-    public async commit(aggregate: GenericAggregate): Promise<void> {
+    public async commit(aggregate: A): Promise<void> {
         const uncommittedChanges = aggregate.getUncommittedChanges();
         await this.es.appendEvents(aggregate.id, uncommittedChanges);
         aggregate.markChangesAsCommitted();
     }
 
-    public async getById(aggregateId: string, options?: { includeDeleted: boolean }): Promise<GenericAggregate | null> {
+    public async getById(aggregateId: string, options?: { includeDeleted: boolean }): Promise<A | null> {
         const aggregate = new this.aggregateConstructor(aggregateId);
 
         const history = await this.es.retrieveEventsByAggregateId(aggregateId);

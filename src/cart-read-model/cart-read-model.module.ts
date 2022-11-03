@@ -3,10 +3,13 @@ import { ModuleRef } from '@nestjs/core';
 import { CartCreatedHandler } from './handlers';
 import { InfraModule } from '../@infra/nest-utilities/infra.module';
 import { EventHandlersBootstrapper } from '../@infra/nest-utilities/event-handlers-bootstrapper';
+import { CartReadModelRepo } from './cart-read-model.repo';
+import { CartReadModelController } from './cart-read-model.controller';
 
 @Module({
     imports: [InfraModule],
-    providers: [CartCreatedHandler],
+    providers: [CartReadModelRepo, CartCreatedHandler],
+    controllers: [CartReadModelController],
 })
 export class CartReadModelModule implements OnModuleInit {
     public constructor(private readonly moduleRef: ModuleRef) {}

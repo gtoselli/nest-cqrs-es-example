@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { RabbitServiceBus } from '../event-bus-implementations';
+import { InMemoryEventBus } from '../event-bus-implementations';
 
 export const EventBusProviderToken = 'ServiceEventBus';
 
 @Module({
-    providers: [{ provide: EventBusProviderToken, useFactory: () => new RabbitServiceBus() }],
+    providers: [{ provide: EventBusProviderToken, useFactory: () => new InMemoryEventBus() }],
     exports: [EventBusProviderToken],
 })
 export class InfraModule {}
