@@ -45,6 +45,8 @@ export class InMemoryEventBus implements IEventBus {
         let count = 0;
         const start = Date.now();
         const handler = this.handlers[event.eventName] as EventHandler<T>;
+        if (!handler) throw new Error(`handler not found for event ${event.eventName}`);
+
         while (count < 3) {
             try {
                 const ret = await handler(event);
