@@ -1,6 +1,6 @@
-import { PublicEvent } from '../../infra/event';
+import { PublicEvent } from '../../../infra/event';
 
-export interface IItemAddedToCartPayload {
+interface IItemAddedToCartPayload {
     itemId: string;
     itemName: string;
 }

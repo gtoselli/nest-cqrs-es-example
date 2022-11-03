@@ -2,7 +2,7 @@ import { AggregateRoot } from '../../infra/aggregate';
 import { v4 as uuid } from 'uuid';
 import { ItemsEntity } from './Items.entity';
 import { ItemEntity } from './Item.entity';
-import { ItemAddedToCart } from './ItemAddedToCart.event';
+import { ItemAddedToCart } from './events';
 
 export class CartAggregate extends AggregateRoot {
     private items = new ItemsEntity();
