@@ -1,5 +1,5 @@
 import { CartAggregate } from './Cart.aggregate';
-import { InMemoryEs, InMemoryEsRepo } from '../../infra/in-memory-event-store/in-memory-es.repo';
+import { InMemoryEs, InMemoryEsRepo } from '../../@infra/in-memory-event-store/in-memory-es.repo';
 import { Provider } from '@nestjs/common';
 
 export class CartInfrastructure {
