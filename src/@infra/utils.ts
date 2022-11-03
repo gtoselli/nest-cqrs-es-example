@@ -1,1 +1,1 @@
-export type ConstructorFor<T> = new (...args) => T;
+export type ClassNotInstanceOf<T> = new (...args) => T;

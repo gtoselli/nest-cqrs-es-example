@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ISimpleRepo } from '../interfaces/SimpleRepo.interface';
 import { ISimpleEventStore } from '../interfaces/SimpleEventStore.interface';
-import { ConstructorFor } from '../utils';
+import { ClassNotInstanceOf } from '../utils';
 import { AggregateRoot } from '../aggregate';
 
 @Injectable()
 export class EventStoreRepo<GenericAggregate extends AggregateRoot> implements ISimpleRepo<GenericAggregate> {
     constructor(
         private readonly es: ISimpleEventStore,
-        private aggregateConstructor: ConstructorFor<GenericAggregate>,
+        private aggregateConstructor: ClassNotInstanceOf<GenericAggregate>,
     ) {}
 
     public async commit(aggregate: GenericAggregate): Promise<void> {

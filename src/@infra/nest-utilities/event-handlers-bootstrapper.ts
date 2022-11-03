@@ -1,7 +1,7 @@
 import { ClassProvider } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { EventBusProviderToken } from './infra.module';
-import { GleEventHandlerMetadataKey } from './decorators/EventHandler.decorator';
+import { GleEventHandlerMetadataKey, GleEventNameMetadataKey } from './decorators/EventHandler.decorator';
 
 export class EventHandlersBootstrapper {
     constructor(private readonly nestModule: any, private readonly moduleRef: ModuleRef) {}
@@ -11,29 +11,34 @@ export class EventHandlersBootstrapper {
     }
 
     public registerAll() {
-        const providers = this.getAllModuleProviders();
-
         const eventBus = this.moduleRef.get(EventBusProviderToken, { strict: false });
+        const handlers = this.onlyEventHandlers();
 
-        const handlers = this.onlyEventHandlers(providers);
-
-        for (const _handler of handlers) {
-            const handler = this.moduleRef.get(_handler);
-            handler.registerTo(eventBus);
+        for (const { handlerForEvent, classProvider } of handlers) {
+            const handler = this.moduleRef.get(classProvider as any);
+            eventBus.register(handlerForEvent, (e) => handler.handle(e));
         }
     }
 
-    private getAllModuleProviders(): ClassProvider[] {
+    private getAllModuleProviders(): ClassProvider<any>[] {
         const moduleProviders = Reflect.getMetadata('providers', this.nestModule);
 
         console.log(`${moduleProviders.length} providers found from module CartReadModelModule`); //TODO
         return moduleProviders;
     }
 
-    private onlyEventHandlers(providers) {
-        const _handlers = providers.filter((pClass) => Reflect.getMetadata(GleEventHandlerMetadataKey, pClass));
+    private onlyEventHandlers(): { classProvider: ClassProvider<any>; handlerForEvent: string }[] {
+        const allModuleRegisteredProviders = this.getAllModuleProviders();
 
-        console.log(`${_handlers.length} handlers providers found from module CartReadModelModule`); //TODO
-        return _handlers;
+        const handlerProviders = allModuleRegisteredProviders.filter((pClass) =>
+            Reflect.getMetadata(GleEventHandlerMetadataKey, pClass),
+        );
+
+        console.log(`${handlerProviders.length} handlers providers found from module CartReadModelModule`); //TODO
+
+        return handlerProviders.map((handler) => ({
+            classProvider: handler,
+            handlerForEvent: Reflect.getMetadata(GleEventNameMetadataKey, handler),
+        }));
     }
 }
