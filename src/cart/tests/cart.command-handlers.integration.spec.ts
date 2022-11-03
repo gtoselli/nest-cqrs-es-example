@@ -21,9 +21,9 @@ describe('Cart command handler integration', () => {
     const itemId = 'foo-item-id';
     const itemName = 'foo-item-name';
 
-    describe('createCartCmd', () => {
+    describe('createCmd', () => {
         it('should create an empty cart', async () => {
-            const cmdResult = await cmdHandlers.createCartCmd();
+            const cmdResult = await cmdHandlers.createCmd();
 
             const cart = await repo.getById(cmdResult.cartId);
             expect(cart.id).toBeDefined();
@@ -32,13 +32,13 @@ describe('Cart command handler integration', () => {
 
     describe('Given an existing empty cart', () => {
         beforeEach(async () => {
-            const _ = await cmdHandlers.createCartCmd();
+            const _ = await cmdHandlers.createCmd();
             cartId = _.cartId;
         });
 
-        describe('addItemToCartCmd', () => {
+        describe('addItemCmd', () => {
             it('should add items', async () => {
-                await cmdHandlers.addItemToCartCmd(cartId, itemId, itemName);
+                await cmdHandlers.addItem(cartId, itemId, itemName);
 
                 const cart = await repo.getById(cartId);
                 expect(cart).toEqual(
