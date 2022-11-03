@@ -20,4 +20,29 @@ describe('Cart aggregate', () => {
       expect(isValidUUID(cart.id)).toBeTruthy();
     });
   });
+
+  describe('Items', () => {
+    let cart: CartAggregate;
+
+    beforeEach(() => {
+      cart = CartAggregate.createEmpty();
+    });
+
+    const itemIdFixture = 'foo-item-id';
+    const itemNameFixture = 'foo-item-name';
+
+    describe('Add a cart item', () => {
+      it('item should be added', () => {
+        cart.addItem(itemIdFixture, itemNameFixture);
+        expect(cart.getItemsCount()).toBe(1);
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        expect(cart.items.items[0]).toEqual({
+          itemId: itemIdFixture,
+          itemName: itemNameFixture,
+        });
+      });
+    });
+  });
 });
