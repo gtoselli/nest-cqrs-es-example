@@ -1,10 +1,10 @@
-import { EventHandler, IEventBus } from '../../interfaces/EventBus.interface';
+import { EventHandlerFunc, IEventBus } from '@infra/interfaces';
 import { Event } from '../../event';
 import { inspect } from 'util';
 import { elapsedFrom } from '../../utils';
 
 export class InMemoryEventBus implements IEventBus {
-    private handlers: { [key: string]: EventHandler<never> } = {};
+    private handlers: { [key: string]: EventHandlerFunc<never> } = {};
     private pendingLocalEvents: Event<unknown>[] = [];
     private executingLocalEvents = false;
 
@@ -20,7 +20,7 @@ export class InMemoryEventBus implements IEventBus {
         return Promise.resolve();
     }
 
-    register<T extends Event<unknown>>(eventName: string, handler: EventHandler<T>): void {
+    register<T extends Event<unknown>>(eventName: string, handler: EventHandlerFunc<T>): void {
         if (this.alreadyRegister(eventName)) throw new Error(`${eventName} is already registered!`);
         this.handlers[eventName] = handler;
     }
@@ -44,8 +44,10 @@ export class InMemoryEventBus implements IEventBus {
     private async dispatchLocalEvent<T extends Event<unknown>>(event: T) {
         let count = 0;
         const start = Date.now();
-        const handler = this.handlers[event.eventName] as EventHandler<T>;
-        if (!handler) throw new Error(`handler not found for event ${event.eventName}`);
+        const handler = this.handlers[event.eventName] as EventHandlerFunc<T>;
+        if (!handler) {
+            return;
+        }
 
         while (count < 3) {
             try {
