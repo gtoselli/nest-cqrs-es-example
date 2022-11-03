@@ -5,28 +5,28 @@ import { ItemEntity } from './Item.entity';
 import { ItemAddedToCart } from './ItemAddedToCart.event';
 
 export class CartAggregate extends AggregateRoot {
-  private items = new ItemsEntity();
+    private items = new ItemsEntity();
 
-  constructor(cartId: string) {
-    super(cartId);
-  }
+    constructor(cartId: string) {
+        super(cartId);
+    }
 
-  public static createEmpty() {
-    const cartId = uuid();
-    return new CartAggregate(cartId);
-  }
+    public static createEmpty() {
+        const cartId = uuid();
+        return new CartAggregate(cartId);
+    }
 
-  public addItem(itemId: string, itemName: string) {
-    this.applyChange(new ItemAddedToCart(this.id, { itemId, itemName }));
-  }
+    public addItem(itemId: string, itemName: string) {
+        this.applyChange(new ItemAddedToCart(this.id, { itemId, itemName }));
+    }
 
-  public getItemsCount(): number {
-    return this.items.getCount();
-  }
+    public getItemsCount(): number {
+        return this.items.getCount();
+    }
 
-  private onItemAddedToCart({ eventPayload }: ItemAddedToCart) {
-    const { itemId, itemName } = eventPayload;
-    const item = new ItemEntity(itemId, itemName);
-    this.items.addItem(item);
-  }
+    private onItemAddedToCart({ eventPayload }: ItemAddedToCart) {
+        const { itemId, itemName } = eventPayload;
+        const item = new ItemEntity(itemId, itemName);
+        this.items.addItem(item);
+    }
 }
