@@ -1,17 +1,16 @@
-import { RabbitServiceBus } from '../../@infra/in-memory-event-bus/in-memory-event-bus';
 import { CartCreatedEvent } from '../../cart/domain/events/CartCreated.event';
-import { EventResult } from '../../@infra/interfaces/EventBus.interface';
-import { Injectable, SetMetadata } from '@nestjs/common';
+import { EventResult, IEventBus } from '../../@infra/interfaces/EventBus.interface';
+import { EventHandler } from '../../@infra/nest-utilities/decorators/EventHandler.decorator';
+import { IEventHandler } from '../../@infra/interfaces/EventHandler.interface';
 
-@Injectable()
-@SetMetadata('isEventHandler', true)
-export class CartCreatedHandler {
-    registerTo(eventBus: RabbitServiceBus) {
-        eventBus.register<CartCreatedEvent>(CartCreatedEvent.name, (e) => this.handler(e));
+@EventHandler()
+export class CartCreatedHandler implements IEventHandler<CartCreatedEvent> {
+    registerTo(eventBus: IEventBus) {
+        eventBus.register<CartCreatedEvent>(CartCreatedEvent.name, (e) => this.handle(e));
     }
 
-    async handler(e: CartCreatedEvent): Promise<EventResult> {
-        console.log(`Elaboro il mio fantastico evento ${JSON.stringify(e)}`);
+    async handle(event: CartCreatedEvent): Promise<EventResult> {
+        console.log(`Elaboro il mio fantastico evento ${JSON.stringify(event)}`);
         return { ack: true };
     }
 }

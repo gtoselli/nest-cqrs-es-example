@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RabbitServiceBus } from './in-memory-event-bus/in-memory-event-bus';
+import { RabbitServiceBus } from '../event-bus-implementations';
 
 export const EventBusProviderToken = 'ServiceEventBus';
 

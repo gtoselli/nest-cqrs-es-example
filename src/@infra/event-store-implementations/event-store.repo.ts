@@ -5,7 +5,7 @@ import { ConstructorFor } from '../utils';
 import { AggregateRoot } from '../aggregate';
 
 @Injectable()
-export class InMemoryEsRepo<GenericAggregate extends AggregateRoot> implements ISimpleRepo<GenericAggregate> {
+export class EventStoreRepo<GenericAggregate extends AggregateRoot> implements ISimpleRepo<GenericAggregate> {
     constructor(
         private readonly es: ISimpleEventStore,
         private aggregateConstructor: ConstructorFor<GenericAggregate>,

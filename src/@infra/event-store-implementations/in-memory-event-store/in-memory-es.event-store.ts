@@ -1,6 +1,6 @@
-import { ISimpleEventStore } from '../interfaces/SimpleEventStore.interface';
-import { Event } from '../event';
-import { IEventBus } from '../interfaces/EventBus.interface';
+import { ISimpleEventStore } from '../../interfaces/SimpleEventStore.interface';
+import { Event } from '../../event';
+import { IEventBus } from '../../interfaces/EventBus.interface';
 
 export class InMemoryEs implements ISimpleEventStore {
     private store: { [key: string]: Event<unknown>[] }[] = [];

@@ -1,2 +1,2 @@
 export * from './in-memory-es.event-store';
-export * from './in-memory-es.repo';
+export * from '../event-store.repo';

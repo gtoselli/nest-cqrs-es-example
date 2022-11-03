@@ -1,5 +1,5 @@
-import { EventHandler, IEventBus } from '../interfaces/EventBus.interface';
-import { Event } from '../event';
+import { EventHandler, IEventBus } from '../../interfaces/EventBus.interface';
+import { Event } from '../../event';
 
 export class RabbitServiceBus implements IEventBus {
     private handlers: { [key: string]: EventHandler<never> } = {};
