@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { CartReadModelRepo } from './cart-read-model.repo';
+import { CartReadModelRepo } from '../cart-read-model.repo';
 
 @Controller('cart-read-model')
 export class CartReadModelController {

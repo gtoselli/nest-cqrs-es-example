@@ -3,7 +3,7 @@ import { ModuleRef } from '@nestjs/core';
 import { CartCreatedHandler, ItemAddedToCartHandler } from './handlers';
 import { EventHandlersBootstrapper, InfraModule } from '@infra';
 import { CartReadModelRepo } from './cart-read-model.repo';
-import { CartReadModelController } from './cart-read-model.controller';
+import { CartReadModelController } from './api/cart-read-model.controller';
 
 @Module({
     imports: [InfraModule],
