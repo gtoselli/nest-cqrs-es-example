@@ -4,6 +4,8 @@ An example [CQRS](https://martinfowler.com/bliki/CQRS.html)
 and [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) application on [Nestjs](https://nestjs.com)
 framework.
 
+![Graph](./graph.excalidraw.png)
+
 ### Scaffolding
 
 TODO
