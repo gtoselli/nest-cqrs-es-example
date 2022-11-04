@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { CartModule } from './cart/cart.module';
 import { InfraModule } from '@infra';
-import { CartReadModelModule } from './cart-read-model/cart-read-model.module';
+import { CartOverviewModule } from './cart-overview/cart-overview.module';
 
 @Module({
-    imports: [InfraModule, CartModule, CartReadModelModule],
+    imports: [InfraModule, CartModule, CartOverviewModule],
 })
 export class AppModule {}

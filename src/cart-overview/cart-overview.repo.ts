@@ -7,9 +7,9 @@ export type CartReadModel = {
     isDeleted: boolean;
 };
 
-const fakeLocalDbCartsKey = 'carts-read-model';
+const fakeLocalDbCartsKey = 'cart-overview';
 
-export class CartReadModelRepo implements OnModuleInit {
+export class CartOverviewRepo implements OnModuleInit {
     async onModuleInit() {
         await fakeLocalDb.init({});
     }

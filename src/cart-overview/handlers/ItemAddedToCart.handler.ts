@@ -1,13 +1,13 @@
 import { EventHandler, EventResult, IEventHandler } from '@infra';
 
 import { Injectable } from '@nestjs/common';
-import { CartReadModelRepo } from '../cart-read-model.repo';
+import { CartOverviewRepo } from '../cart-overview.repo';
 import { ItemAddedToCartEvent } from '../../cart/domain/events';
 
 @EventHandler(ItemAddedToCartEvent)
 @Injectable()
 export class ItemAddedToCartHandler implements IEventHandler<ItemAddedToCartEvent> {
-    constructor(private readonly repo: CartReadModelRepo) {}
+    constructor(private readonly repo: CartOverviewRepo) {}
 
     async handle(event: ItemAddedToCartEvent): Promise<EventResult> {
         const cart = await this.repo.getOne(event.aggregateId);
