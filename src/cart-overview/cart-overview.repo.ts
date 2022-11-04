@@ -39,4 +39,8 @@ export class CartOverviewRepo implements OnModuleInit {
     public async getMany(): Promise<CartReadModel[]> {
         return (await fakeLocalDb.get(fakeLocalDbCartsKey)) || [];
     }
+
+    public async deleteMany(): Promise<void> {
+        await fakeLocalDb.clear();
+    }
 }

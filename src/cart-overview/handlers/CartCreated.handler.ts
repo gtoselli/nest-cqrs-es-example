@@ -1,4 +1,4 @@
-import { CartCreatedEvent } from '../../cart/domain/events/CartCreated.event';
+import { CartCreatedEvent } from '../../cart/domain/events';
 import { EventHandler, EventResult, IEventHandler } from '@infra';
 import { Injectable } from '@nestjs/common';
 import { CartOverviewRepo } from '../cart-overview.repo';
