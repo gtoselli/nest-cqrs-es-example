@@ -1,3 +1,4 @@
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/gtoselli/nest-cqrs-es-example/ci)
 # Shopping cart 🛒
 
 An example [CQRS](https://martinfowler.com/bliki/CQRS.html)
