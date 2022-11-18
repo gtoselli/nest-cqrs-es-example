@@ -16,4 +16,8 @@ export class RabbitNestProvider implements OnModuleInit, OnModuleDestroy {
     public async onModuleDestroy() {
         await this.rabbit.disconnect();
     }
+
+    public getInstance() {
+        return this.rabbit;
+    }
 }

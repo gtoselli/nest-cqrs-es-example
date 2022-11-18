@@ -9,6 +9,7 @@ export interface RabbitMessage {
     messageId: string;
     correlationId: string;
     causationId: string;
+    aggregateId: string;
     aggregateVersion: number;
     aggregateVersionIndex: number;
     payload: unknown;
