@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ISimpleRepo } from '../interfaces/SimpleRepo.interface';
-import { ISimpleEventStore } from '../interfaces/SimpleEventStore.interface';
+import { ISimpleRepo } from './SimpleRepo.interface';
+import { ISimpleEventStore } from '../event-store/event-store.interface';
 import { ClassNotInstanceOf } from '../utils';
 import { AggregateRoot } from '../aggregate';
 

@@ -1,6 +1,6 @@
 import { ClassProvider } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { EventBusProviderToken } from './infra.module';
+import { EVENT_BUS_PROVIDER_TOKEN } from './infra.module';
 import { GleEventHandlerMetadataKey, GleEventNameMetadataKey } from './decorators/EventHandler.decorator';
 
 export class EventHandlersBootstrapper {
@@ -11,7 +11,7 @@ export class EventHandlersBootstrapper {
     }
 
     public registerAll() {
-        const eventBus = this.moduleRef.get(EventBusProviderToken, { strict: false });
+        const eventBus = this.moduleRef.get(EVENT_BUS_PROVIDER_TOKEN, { strict: false });
         const handlers = this.onlyEventHandlers();
 
         for (const { handlerForEvent, classProvider } of handlers) {

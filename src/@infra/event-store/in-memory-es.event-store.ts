@@ -1,11 +1,11 @@
-import { ISimpleEventStore } from '../../interfaces/SimpleEventStore.interface';
-import { Event } from '../../event';
-import { IEventBus } from '../../interfaces/EventBus.interface';
+import { ISimpleEventStore } from './event-store.interface';
+import { Event } from '../event';
+import { OutboxPattern } from '@infra/outbox-pattern/outbox-pattern';
 
 export class InMemoryEs implements ISimpleEventStore {
     private store: { [key: string]: Event<unknown>[] }[] = [];
 
-    constructor(private readonly eventBus: IEventBus) {}
+    constructor(private readonly outBox: OutboxPattern) {}
 
     public async appendEvents(aggregateId: string, events: Event<unknown>[]): Promise<void> {
         if (!this.store[aggregateId]) {
@@ -13,7 +13,7 @@ export class InMemoryEs implements ISimpleEventStore {
         }
         events.forEach((event) => {
             this.store[aggregateId].push(event);
-            this.eventBus.emit(event);
+            this.outBox.add(event);
         });
     }
 

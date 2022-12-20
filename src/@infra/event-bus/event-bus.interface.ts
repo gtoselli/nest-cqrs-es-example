@@ -9,7 +9,5 @@ export type EventHandlerFunc<T extends Event<unknown>> = (e: T) => Promise<Event
 export interface IEventBus {
     register<T extends Event<unknown>>(eventName: string, handler: EventHandlerFunc<T>): void;
 
-    emit<T extends Event<unknown>>(event: T): Promise<void>;
-
     emits<T extends Event<unknown>>(events: T[]): Promise<void>;
 }

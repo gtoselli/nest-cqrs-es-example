@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { ISimpleRepo } from '@infra';
 import { CartAggregate } from './domain/Cart.aggregate';
+import { ISimpleRepo } from '@infra';
 
 @Injectable()
 export class CartCommandHandlers {

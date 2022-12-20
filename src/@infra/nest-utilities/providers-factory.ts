@@ -1,8 +1,6 @@
-import { IEventBus } from '../interfaces/EventBus.interface';
-import { EventStoreRepo, InMemoryEs } from '../event-store-implementations';
-import { ISimpleEventStore } from '../interfaces/SimpleEventStore.interface';
+import { EventStoreRepo, InMemoryEs, OUTBOX_PROVIDER_TOKEN } from '../';
+import { ISimpleEventStore } from '../event-store/event-store.interface';
 import { CartAggregate } from '../../cart/domain/Cart.aggregate';
-import { EventBusProviderToken } from './infra.module';
 
 export class ProvidersFactory {
     constructor(public contextName: string) {}
@@ -18,10 +16,10 @@ export class ProvidersFactory {
     private eventStore() {
         return {
             provide: this.esProviderName(),
-            useFactory: async (eventBus: IEventBus) => {
-                return new InMemoryEs(eventBus);
+            useFactory: async (outBox) => {
+                return new InMemoryEs(outBox);
             },
-            inject: [EventBusProviderToken],
+            inject: [OUTBOX_PROVIDER_TOKEN],
         };
     }
 
