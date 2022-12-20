@@ -9,6 +9,9 @@ export class CartController {
     @Post('create')
     @HttpCode(202)
     public async createCmd() {
+        for (const n of Array.from(Array(10000).keys())) {
+            await this.commands.createCmd();
+        }
         return await this.commands.createCmd();
     }
 

@@ -1,30 +1,33 @@
-import { ClassProvider } from '@nestjs/common';
+import { ClassProvider, Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { EventBusProviderToken } from './infra.module';
 import { GleEventHandlerMetadataKey, GleEventNameMetadataKey } from './decorators/EventHandler.decorator';
+import { ILocalEventBus } from '@infra/event-store/local-event-bus';
+import { EventStore } from '@infra/event-store/event-store';
 
 export class EventHandlersBootstrapper {
     constructor(private readonly nestModule: any, private readonly moduleRef: ModuleRef) {}
+
+    private logger = new Logger(EventHandlersBootstrapper.name);
 
     public static factory(nestModule: any, moduleRef: ModuleRef) {
         return new EventHandlersBootstrapper(nestModule, moduleRef);
     }
 
-    public registerAll() {
-        const eventBus = this.moduleRef.get(EventBusProviderToken, { strict: false });
+    public async registerAll() {
+        const eventBus: ILocalEventBus = this.moduleRef.get(EventBusProviderToken, { strict: false });
         const handlers = this.onlyEventHandlers();
 
         for (const { handlerForEvent, classProvider } of handlers) {
             const handler = this.moduleRef.get(classProvider as any);
             eventBus.register(handlerForEvent, (e) => handler.handle(e));
         }
+        const eventStore: EventStore = this.moduleRef.get('CartEs', { strict: false });
+        await eventStore.start$AllPersistentSub(async (e) => await eventBus.emitAsync(e));
     }
 
-    private getAllModuleProviders(): ClassProvider<any>[] {
-        const moduleProviders = Reflect.getMetadata('providers', this.nestModule);
-
-        console.log(`${moduleProviders.length} providers found from module CartReadModelModule`); //TODO
-        return moduleProviders;
+    private getAllModuleProviders(): ClassProvider<unknown>[] {
+        return Reflect.getMetadata('providers', this.nestModule);
     }
 
     private onlyEventHandlers(): { classProvider: ClassProvider<any>; handlerForEvent: string }[] {
@@ -34,7 +37,7 @@ export class EventHandlersBootstrapper {
             Reflect.getMetadata(GleEventHandlerMetadataKey, pClass),
         );
 
-        console.log(`${handlerProviders.length} handlers providers found from module CartReadModelModule`); //TODO
+        this.logger.debug(`${handlerProviders.length} handlers providers found from module CartReadModelModule`); //TODO
 
         return handlerProviders.map((handler) => ({
             classProvider: handler,

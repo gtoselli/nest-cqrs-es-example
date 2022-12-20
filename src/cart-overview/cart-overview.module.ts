@@ -14,6 +14,6 @@ export class CartOverviewModule implements OnModuleInit {
     public constructor(private readonly moduleRef: ModuleRef) {}
 
     async onModuleInit() {
-        EventHandlersBootstrapper.factory(CartOverviewModule, this.moduleRef).registerAll();
+        await EventHandlersBootstrapper.factory(CartOverviewModule, this.moduleRef).registerAll();
     }
 }
