@@ -1,17 +1,7 @@
 import { ISimpleEventStore } from '@infra';
 import { Event } from '../event';
-import {
-    EventStoreDBClient,
-    FORWARDS,
-    jsonEvent,
-    persistentSubscriptionToAllSettingsFromDefaults,
-    ResolvedEvent,
-    START,
-    streamNameFilter,
-} from '@eventstore/db-client';
+import { EventStoreDBClient, FORWARDS, jsonEvent, ResolvedEvent, START } from '@eventstore/db-client';
 import { Logger } from '@nestjs/common';
-import { hostname } from 'os';
-import { PersistentSubscriptionToAllSettings } from '@eventstore/db-client/dist/persistentSubscription/utils/persistentSubscriptionSettings';
 import * as process from 'process';
 
 // https://github.com/GoogleChromeLabs/jsbi/issues/30
@@ -66,44 +56,43 @@ export class EventStore implements ISimpleEventStore {
     }
 
     public async start$AllPersistentSub(onEvent: (e: Event<unknown>) => Promise<void>) {
-        const groupName = `${hostname()}`;
-        const persistentSubSettings: PersistentSubscriptionToAllSettings =
-            persistentSubscriptionToAllSettingsFromDefaults({});
-
-        try {
-            await this.client.createPersistentSubscriptionToAll(groupName, persistentSubSettings, {
-                filter: streamNameFilter({ prefixes: ['cart'] }),
-            });
-        } catch (e) {
-            if (e.code == 6) {
-                {
-                    this.logger.debug(`$All persistence subscription with groupName ${groupName} already exists`);
-                    await this.client.deletePersistentSubscriptionToAll(groupName);
-                    return await this.start$AllPersistentSub(onEvent);
-                }
-            } else throw e;
-        }
-
-        const startSub = async () => {
-            try {
-                const subscription = this.client.subscribeToPersistentSubscriptionToAll(groupName);
-                this.logger.debug(`${groupName} subscribed to $all stream`);
-
-                for await (const event of subscription) {
-                    this.logger.debug(`handling event ${event.event?.type} with retryCount ${event.retryCount}`);
-                    try {
-                        await onEvent(this.rawEventToGoleeEvent(event));
-                        await subscription.ack(event);
-                    } catch (e) {
-                        await subscription.ack(event);
-                    }
-                }
-            } catch (error) {
-                console.log(`Subscription was dropped. ${error}`);
-            }
-        };
-
-        startSub();
+        // const groupName = `${hostname()}`;
+        // const persistentSubSettings: PersistentSubscriptionToAllSettings =
+        //     persistentSubscriptionToAllSettingsFromDefaults({});
+        //
+        // try {
+        //     await this.client.createPersistentSubscriptionToAll(groupName, persistentSubSettings, {
+        //         filter: streamNameFilter({ prefixes: ['cart'] }),
+        //     });
+        // } catch (e) {
+        //     if (e.code == 6) {
+        //         {
+        //             this.logger.debug(`$All persistence subscription with groupName ${groupName} already exists`);
+        //             await this.client.deletePersistentSubscriptionToAll(groupName);
+        //             return await this.start$AllPersistentSub(onEvent);
+        //         }
+        //     } else throw e;
+        // }
+        // const startSub = async () => {
+        //     try {
+        //         const subscription = this.client.subscribeToPersistentSubscriptionToAll(groupName);
+        //         this.logger.debug(`${groupName} subscribed to $all stream`);
+        //
+        //         for await (const event of subscription) {
+        //             this.logger.debug(`handling event ${event.event?.type} with retryCount ${event.retryCount}`);
+        //             try {
+        //                 await onEvent(this.rawEventToGoleeEvent(event));
+        //                 await subscription.ack(event);
+        //             } catch (e) {
+        //                 await subscription.ack(event);
+        //             }
+        //         }
+        //     } catch (error) {
+        //         console.log(`Subscription was dropped. ${error}`);
+        //     }
+        // };
+        //
+        // startSub();
     }
 
     private rawEventToGoleeEvent(rawEvent: ResolvedEvent): Event<unknown> {

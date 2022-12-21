@@ -1,4 +1,5 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/gtoselli/nest-cqrs-es-example/ci)
+
 # Shopping cart 🛒
 
 An example [CQRS](https://martinfowler.com/bliki/CQRS.html)
@@ -36,3 +37,9 @@ Next steps
 ### Run locally
 
 Run with `env-cmd -f .local.env npm run start:dev`
+
+---
+
+## Serverless
+
+- Run locally with `serverless offline`

@@ -1,0 +1,27 @@
+service: cart-service
+
+frameworkVersion: '3'
+plugins:
+  - serverless-jetpack
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-south-1
+  environment:
+    ESDB_ENDPOINT: localhost:2113
+
+functions:
+  write-side:
+    handler: dist/cart/lambda.handler
+    events:
+      - http:
+          method: POST
+          path: /{proxy+}
+  cart-overview:
+    handler: dist/cart-overview/lambda.handler
+    events:
+      - http:
+          method: GET
+          path: /{proxy+}
