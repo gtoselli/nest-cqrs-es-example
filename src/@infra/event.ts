@@ -13,12 +13,12 @@ export abstract class Event<EventPayloadType> {
     }
 
     public setEventId(eventId: string): void {
-        if (this.eventId) throw new Error('Cannot set eventId twice');
+        // if (this.eventId) throw new Error('Cannot set eventId twice'); //TODO
         this.eventId = eventId;
     }
 
     public setAggregateVersion(version: number): void {
-        if (this.aggregateVersion) throw new Error('Cannot set aggregateVersion twice');
+        // if (this.aggregateVersion) throw new Error('Cannot set aggregateVersion twice'); //TODO
         this.aggregateVersion = version;
     }
 }

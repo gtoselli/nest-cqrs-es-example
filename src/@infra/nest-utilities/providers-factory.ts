@@ -1,6 +1,8 @@
-import { EventStoreRepo, InMemoryEs, OUTBOX_PROVIDER_TOKEN } from '../';
+import { EventStoreRepo, OUTBOX_PROVIDER_TOKEN } from '../';
 import { ISimpleEventStore } from '../event-store/event-store.interface';
 import { CartAggregate } from '../../cart/domain/Cart.aggregate';
+import { DdbEventStore } from '@infra/event-store/dynamodb/ddb-event-store';
+import { eventsMap } from '../../cart/domain/events';
 
 export class ProvidersFactory {
     constructor(public contextName: string) {}
@@ -16,8 +18,8 @@ export class ProvidersFactory {
     private eventStore() {
         return {
             provide: this.esProviderName(),
-            useFactory: async (outBox) => {
-                return new InMemoryEs(outBox);
+            useFactory: async () => {
+                return new DdbEventStore(eventsMap);
             },
             inject: [OUTBOX_PROVIDER_TOKEN],
         };

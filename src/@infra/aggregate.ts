@@ -25,10 +25,13 @@ export abstract class AggregateRoot {
     }
 
     public applyChange(event: Event<unknown>, isNew = true): void {
+        this.version++;
+        event.setAggregateVersion(this.version);
+
         const handler = this.getEventHandler(event);
         handler.call(this, event);
+
         isNew && this._changes.push(event);
-        this.version++;
     }
 
     protected getEventHandler(event: Event<unknown>): any {
