@@ -3,7 +3,7 @@ import { ModuleRef } from '@nestjs/core';
 import { EventBusProviderToken } from './infra.module';
 import { GleEventHandlerMetadataKey, GleEventNameMetadataKey } from './decorators/EventHandler.decorator';
 import { ILocalEventBus } from '@infra/event-store/local-event-bus';
-import { EventStore } from '@infra/event-store/event-store';
+import { MongoEventStore } from '@infra/event-store/mongo-event-store';
 
 export class EventHandlersBootstrapper {
     constructor(private readonly nestModule: any, private readonly moduleRef: ModuleRef) {}
@@ -22,8 +22,7 @@ export class EventHandlersBootstrapper {
             const handler = this.moduleRef.get(classProvider as any);
             eventBus.register(handlerForEvent, (e) => handler.handle(e));
         }
-        const eventStore: EventStore = this.moduleRef.get('CartEs', { strict: false });
-        await eventStore.start$AllPersistentSub(async (e) => await eventBus.emitAsync(e));
+        const eventStore: MongoEventStore = this.moduleRef.get('CartEs', { strict: false });
     }
 
     private getAllModuleProviders(): ClassProvider<unknown>[] {
