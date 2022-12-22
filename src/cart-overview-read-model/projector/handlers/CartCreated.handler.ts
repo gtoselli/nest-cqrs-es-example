@@ -1,7 +1,7 @@
-import { CartCreatedEvent } from '../../cart/domain/events';
+import { CartCreatedEvent } from '../../../cart/domain/events';
 import { EventHandler, EventResult, IEventHandler } from '@infra';
 import { Injectable } from '@nestjs/common';
-import { CartOverviewRepo } from '../cart-overview.repo';
+import { CartOverviewRepo } from '../../cart-overview.repo';
 
 @EventHandler(CartCreatedEvent)
 @Injectable()

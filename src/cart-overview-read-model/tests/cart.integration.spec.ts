@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { InfraModule } from '@infra';
 import { CartOverviewRepo } from '../cart-overview.repo';
-import { CartCreatedHandler, ItemAddedToCartHandler } from '../handlers';
+import { CartCreatedHandler, ItemAddedToCartHandler } from '../projector/handlers';
 import { CartCreatedEventFixture } from './fixtures/CartCreatedEvent.fixture';
 import { ItemAddedToCartEventFixture } from './fixtures/ItemAddedToCartEvent.fixture';
 
