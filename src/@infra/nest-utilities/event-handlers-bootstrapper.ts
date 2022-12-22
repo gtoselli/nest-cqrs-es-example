@@ -1,17 +1,20 @@
-import { ClassProvider } from '@nestjs/common';
+import { ClassProvider, Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { EVENT_BUS_PROVIDER_TOKEN } from './infra.module';
+import { EventBusProviderToken } from './infra.module';
 import { GleEventHandlerMetadataKey, GleEventNameMetadataKey } from './decorators/EventHandler.decorator';
+import { ILocalEventBus } from '@infra/event-store/local-event-bus';
 
 export class EventHandlersBootstrapper {
     constructor(private readonly nestModule: any, private readonly moduleRef: ModuleRef) {}
+
+    private logger = new Logger(EventHandlersBootstrapper.name);
 
     public static factory(nestModule: any, moduleRef: ModuleRef) {
         return new EventHandlersBootstrapper(nestModule, moduleRef);
     }
 
-    public registerAll() {
-        const eventBus = this.moduleRef.get(EVENT_BUS_PROVIDER_TOKEN, { strict: false });
+    public async registerAll() {
+        const eventBus: ILocalEventBus = this.moduleRef.get(EventBusProviderToken, { strict: false });
         const handlers = this.onlyEventHandlers();
 
         for (const { handlerForEvent, classProvider } of handlers) {
@@ -20,11 +23,8 @@ export class EventHandlersBootstrapper {
         }
     }
 
-    private getAllModuleProviders(): ClassProvider<any>[] {
-        const moduleProviders = Reflect.getMetadata('providers', this.nestModule);
-
-        console.log(`${moduleProviders.length} providers found from module CartReadModelModule`); //TODO
-        return moduleProviders;
+    private getAllModuleProviders(): ClassProvider<unknown>[] {
+        return Reflect.getMetadata('providers', this.nestModule);
     }
 
     private onlyEventHandlers(): { classProvider: ClassProvider<any>; handlerForEvent: string }[] {
@@ -34,7 +34,7 @@ export class EventHandlersBootstrapper {
             Reflect.getMetadata(GleEventHandlerMetadataKey, pClass),
         );
 
-        console.log(`${handlerProviders.length} handlers providers found from module CartReadModelModule`); //TODO
+        this.logger.debug(`${handlerProviders.length} event handlers providers found`); //TODO add module name
 
         return handlerProviders.map((handler) => ({
             classProvider: handler,

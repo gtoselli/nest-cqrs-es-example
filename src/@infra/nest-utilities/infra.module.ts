@@ -1,22 +1,18 @@
 import { Module } from '@nestjs/common';
-import { InMemoryEventBus } from '../event-bus';
-import { OutboxPattern } from '@infra/outbox-pattern/outbox-pattern';
+import { LocalEventBus } from '@infra/event-store/local-event-bus';
+import { MongoProjector } from '@infra/projector/mongo-projector';
 
-export const EVENT_BUS_PROVIDER_TOKEN = 'ServiceEventBus';
-export const OUTBOX_PROVIDER_TOKEN = 'Outbox';
+export const EventBusProviderToken = 'ServiceEventBus';
+export const ProjectorProviderToken = 'Projector';
 
 @Module({
     providers: [
         {
-            provide: EVENT_BUS_PROVIDER_TOKEN,
-            useFactory: () => new InMemoryEventBus(),
+            provide: EventBusProviderToken,
+            useFactory: () => new LocalEventBus(),
         },
-        {
-            provide: OUTBOX_PROVIDER_TOKEN,
-            useFactory: (eventBus) => new OutboxPattern(eventBus),
-            inject: [EVENT_BUS_PROVIDER_TOKEN],
-        },
+        { provide: ProjectorProviderToken, useFactory: () => new MongoProjector() },
     ],
-    exports: [EVENT_BUS_PROVIDER_TOKEN, OUTBOX_PROVIDER_TOKEN],
+    exports: [EventBusProviderToken],
 })
 export class InfraModule {}

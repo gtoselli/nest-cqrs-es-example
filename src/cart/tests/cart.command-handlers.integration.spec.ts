@@ -1,6 +1,6 @@
 import { CartCommandHandlers } from '../cart.command-handlers';
 import { Test } from '@nestjs/testing';
-import { InfraModule, ISimpleRepo, ProvidersFactory } from '@infra';
+import { InfraModule, ISimpleRepo, ProvidersHelper } from '@infra';
 import { CartAggregate } from '../domain/Cart.aggregate';
 
 describe('Cart command handler integration', () => {
@@ -10,7 +10,7 @@ describe('Cart command handler integration', () => {
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
             imports: [InfraModule],
-            providers: [CartCommandHandlers, ...ProvidersFactory.withContext('Cart').all()],
+            providers: [CartCommandHandlers, ...ProvidersHelper.forAggregate('Cart')],
         }).compile();
 
         cmdHandlers = moduleRef.get<CartCommandHandlers>(CartCommandHandlers);
