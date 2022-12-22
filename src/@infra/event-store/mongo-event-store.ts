@@ -2,6 +2,7 @@ import { ISimpleEventStore } from '@infra';
 import { Event } from '../event';
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { MongoClient, ObjectId } from 'mongodb';
+import { eventsMap } from '../../cart/domain/events';
 
 export class MongoEventStore implements ISimpleEventStore, OnModuleInit {
     private readonly client: MongoClient;
@@ -12,8 +13,10 @@ export class MongoEventStore implements ISimpleEventStore, OnModuleInit {
         await this.client.connect();
     }
 
-    constructor(private readonly domainEvents: Map<string, Event<unknown>>, private readonly aggregateName: string) {
-        this.client = new MongoClient('mongodb://root:example@localhost:27017');
+    constructor() {
+        this.client = new MongoClient(
+            'mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0&readPreference=primary&ssl=false',
+        );
     }
 
     public async retrieveEventsByAggregateId(aggregate_id: string): Promise<Event<unknown>[]> {
@@ -26,7 +29,7 @@ export class MongoEventStore implements ISimpleEventStore, OnModuleInit {
 
         this.logger.debug(`Aggregate ${aggregate_id} rehydrated from ${eventsDocs.length} events`);
 
-        return this.mongoDocsToDomainEvents(eventsDocs);
+        return MongoEventStore.mongoDocsToDomainEvents(eventsDocs, eventsMap);
     }
 
     public async appendEvents(aggregate_id: string, events: Event<unknown>[]): Promise<void> {
@@ -43,14 +46,14 @@ export class MongoEventStore implements ISimpleEventStore, OnModuleInit {
         this.logger.debug(`Appended ${events.length} events to stream ${aggregate_id}.`);
     }
 
-    private mongoDocsToDomainEvents(docs: any[]) {
+    static mongoDocsToDomainEvents(docs: any[], eventsMap: Map<string, Event<unknown>>) {
         return docs.map((e) => {
             // TODO: bad solution
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            const event = new (this.domainEvents.get(e.event_name!)!)(e.aggregate_id, e.payload);
-            event.setEventId(e.event_id);
-            event.setAggregateVersion(e.aggregate_version);
+            const event = new (eventsMap.get(e.event_name!)!)(e.aggregate_id, e.payload);
+            event.setEventId(e.event_id); //TODO
+            event.setAggregateVersion(e.aggregate_version); //TODO
             return event;
         });
     }

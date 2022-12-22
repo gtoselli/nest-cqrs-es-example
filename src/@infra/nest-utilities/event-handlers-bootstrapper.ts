@@ -1,9 +1,10 @@
 import { ClassProvider, Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { EventBusProviderToken } from './infra.module';
+import { EventBusProviderToken, ProjectorProviderToken } from './infra.module';
 import { GleEventHandlerMetadataKey, GleEventNameMetadataKey } from './decorators/EventHandler.decorator';
 import { ILocalEventBus } from '@infra/event-store/local-event-bus';
-import { MongoEventStore } from '@infra/event-store/mongo-event-store';
+import { MongoProjector } from '@infra/projector/mongo-projector';
+import { Event } from '@infra/event';
 
 export class EventHandlersBootstrapper {
     constructor(private readonly nestModule: any, private readonly moduleRef: ModuleRef) {}
@@ -22,7 +23,13 @@ export class EventHandlersBootstrapper {
             const handler = this.moduleRef.get(classProvider as any);
             eventBus.register(handlerForEvent, (e) => handler.handle(e));
         }
-        const eventStore: MongoEventStore = this.moduleRef.get('CartEs', { strict: false });
+        const projector: MongoProjector = this.moduleRef.get(ProjectorProviderToken, { strict: false });
+
+        await projector.subscribeToAll('END', async (events: Event<unknown>[]) => {
+            for (const e of events) {
+                await eventBus.emitAsync(e);
+            }
+        });
     }
 
     private getAllModuleProviders(): ClassProvider<unknown>[] {

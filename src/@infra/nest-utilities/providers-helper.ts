@@ -1,5 +1,4 @@
 import { MongoEventStore } from '@infra/event-store/mongo-event-store';
-import { eventsMap } from '../../cart/domain/events';
 import { ISimpleEventStore } from '@infra/interfaces';
 import { EventStoreRepo } from '@infra/event-store/event-store.repo';
 import { CartAggregate } from '../../cart/domain/Cart.aggregate';
@@ -23,7 +22,7 @@ export class ProvidersHelper {
             {
                 provide: this.esProviderName(),
                 useFactory: async () => {
-                    const eventStore = new MongoEventStore(eventsMap, this.aggregateName);
+                    const eventStore = new MongoEventStore();
                     return eventStore;
                 },
                 inject: [],
