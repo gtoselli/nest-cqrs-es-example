@@ -1,7 +1,7 @@
 import { MongoEventStore } from '@infra/event-store/mongo-event-store';
-import { ISimpleEventStore } from '@infra/interfaces';
 import { EventStoreRepo } from '@infra/event-store/event-store.repo';
 import { CartAggregate } from '../../cart/domain/Cart.aggregate';
+import { ISimpleEventStore } from '@infra/event-store/event-store.interface';
 
 export class ProvidersHelper {
     constructor(public aggregateName: string) {}

@@ -20,7 +20,7 @@ functions:
           method: POST
           path: /{proxy+}
   cart-overview:
-    handler: dist/cart-overview/lambda.handler
+    handler: dist/cart-overview-read-model/api/lambda.handler
     events:
       - http:
           method: GET

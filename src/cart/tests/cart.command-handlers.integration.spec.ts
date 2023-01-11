@@ -1,7 +1,8 @@
 import { CartCommandHandlers } from '../cart.command-handlers';
 import { Test } from '@nestjs/testing';
-import { InfraModule, ISimpleRepo, ProvidersHelper } from '@infra';
+import { InfraModule, ProvidersHelper } from '@infra';
 import { CartAggregate } from '../domain/Cart.aggregate';
+import { ISimpleRepo } from '@infra/repo';
 
 describe('Cart command handler integration', () => {
     let cmdHandlers: CartCommandHandlers;

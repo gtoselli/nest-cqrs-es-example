@@ -1,5 +1,6 @@
-import { Event, EventHandlerFunc } from '@infra';
+import { Event } from '@infra';
 import { Logger } from '@nestjs/common';
+import { EventHandlerFunc } from '@infra/event-bus/event-bus.interface';
 
 export interface ILocalEventBus {
     register<T extends Event<unknown>>(eventName: string, handler: EventHandlerFunc<T>): void;

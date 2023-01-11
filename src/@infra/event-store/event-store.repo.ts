@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ISimpleRepo } from './SimpleRepo.interface';
 import { ISimpleEventStore } from '../event-store/event-store.interface';
 import { ClassNotInstanceOf } from '../utils';
 import { AggregateRoot } from '../aggregate';
+import { ISimpleRepo } from '@infra/repo';
 
 @Injectable()
 export class EventStoreRepo<A extends AggregateRoot> implements ISimpleRepo<A> {

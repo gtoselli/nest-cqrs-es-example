@@ -18,7 +18,7 @@ export class CartOverviewProjectorModule implements OnModuleInit {
 
         const eventBus: ILocalEventBus = this.moduleRef.get(EventBusProviderToken, { strict: false });
         const projector: MongoProjector = this.moduleRef.get(ProjectorProviderToken, { strict: false });
-        await projector.subscribeToAll('END', async (events: Event<unknown>[]) => {
+        await projector.subscribeToAll('START', async (events: Event<unknown>[]) => {
             for (const e of events) {
                 await eventBus.emitAsync(e);
             }

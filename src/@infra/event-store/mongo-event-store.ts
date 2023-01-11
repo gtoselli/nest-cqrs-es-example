@@ -1,8 +1,8 @@
-import { ISimpleEventStore } from '@infra';
 import { Event } from '../event';
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { MongoClient, ObjectId } from 'mongodb';
 import { eventsMap } from '../../cart/domain/events';
+import { ISimpleEventStore } from '@infra/event-store/event-store.interface';
 
 export class MongoEventStore implements ISimpleEventStore, OnModuleInit {
     private readonly client: MongoClient;
